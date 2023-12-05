@@ -1,4 +1,7 @@
 import './styles.scss';
 import 'bootstrap';
+import onChange from 'on-change';
 
-console.log('Hello World!');
+export default () => {
+ 
+}
