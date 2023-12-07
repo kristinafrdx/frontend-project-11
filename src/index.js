@@ -1,7 +1,5 @@
 import './styles.scss';
 import 'bootstrap';
-import onChange from 'on-change';
+import app from './app'
 
-export default () => {
- 
-}
+app()
