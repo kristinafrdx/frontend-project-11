@@ -1,5 +1,5 @@
-import { schema } from "./app";
+// import { schema } from "./app.js";
 
-export default render = () => {
-  
-}
+// export default render = () => {
+
+// }
