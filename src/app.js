@@ -2,7 +2,7 @@ import * as yup from 'yup';
 // import render from './view.js';
 import onChange from 'on-change';
 
-export const schema = yup.object().shape({
+const schema = yup.object().shape({
   url: yup.string().url(),
 });
 
@@ -23,22 +23,20 @@ const app = () => {
   // const watchedState = onChange(initialState, render(initialState, elements));
   elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
-    initialState.form.status = 'sending'; // поменять на watchedState
     const formData = new FormData(e.target);
     const value = formData.get('url'); // получили значение в инпуте
-    const promis = schema.isValid({ value }) // когда промис разрешится
+    schema.validate({ url: value }) // когда промис разрешится
       .then(() => {
-        if (promis === true) { // в случае валидности
-          initialState.form.valid = 'true'; // поменять на watchedState
-          initialState.form.field = formData.get('url'); // поменять на watchedState
-          elements.input.style.border = '1px solid black';
-        } else { // в случае невалидности
-          initialState.form.valid = 'false'; // поменять на watchedState
-          elements.input.style.border = '1px solid red';
-        }
+        // в случае валидности
+        initialState.form.status = 'sending'; // поменять на watchedState
+        initialState.form.valid = 'true'; // поменять на watchedState
+        initialState.form.field = formData.get('url'); // поменять на watchedState
+        elements.input.style.border = '1px solid black';
       })
-      .catch((error) => {
-        console.log(error);
+      // в случае невалидности
+      .catch(() => {
+        initialState.form.valid = 'false'; // поменять на watchedState
+        elements.input.style.border = '1px solid red';
       });
   });
 
