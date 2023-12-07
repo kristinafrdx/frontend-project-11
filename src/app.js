@@ -23,6 +23,7 @@ const app = () => {
   // const watchedState = onChange(initialState, render(initialState, elements));
   elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
+    elements.input.focus();
     const formData = new FormData(e.target);
     const value = formData.get('url'); // получили значение в инпуте
     schema.validate({ url: value }) // когда промис разрешится
@@ -38,6 +39,7 @@ const app = () => {
         initialState.form.valid = 'false'; // поменять на watchedState
         elements.input.style.border = '1px solid red';
       });
+      elements.form.reset()
   });
 
 //     try {
