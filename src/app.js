@@ -1,9 +1,15 @@
 import * as yup from 'yup';
-// import render from './view.js';
 import onChange from 'on-change';
+import render from './view.js';
 
-const schema = yup.object().shape({
-  url: yup.string().url(),
+yup.setLocale({ // set locale "notOneOf()"" for using links were already added
+  mixed: {
+    notOneOf: 'RSS уже существует',
+    // default: 'the entered data is\' valid',
+  },
+  string: {
+    url: 'Ссылка должна быть валидным URL',
+  },
 });
 
 const app = () => {
@@ -11,49 +17,45 @@ const app = () => {
     form: document.querySelector('form'),
     buttonSubmit: document.querySelector('button[type="submit"]'),
     input: document.querySelector('#url-input'),
+    message: document.querySelector('.feedback'), // a message at the bottom of input
   };
+
   const initialState = {
     form: {
       field: '',
       status: 'filling',
       valid: true,
+      addedLinks: [],
       errors: [],
     },
   };
-  // const watchedState = onChange(initialState, render(initialState, elements));
+  const watchedState = onChange(initialState, render(initialState, elements));
+
   elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
-    elements.input.focus();
     const formData = new FormData(e.target);
-    const value = formData.get('url'); // получили значение в инпуте
-    schema.validate({ url: value }) // когда промис разрешится
-      .then(() => {
-        // в случае валидности
-        initialState.form.status = 'sending'; // поменять на watchedState
-        initialState.form.valid = 'true'; // поменять на watchedState
-        initialState.form.field = formData.get('url'); // поменять на watchedState
-        elements.input.style.border = '1px solid black';
-      })
-      // в случае невалидности
-      .catch(() => {
-        initialState.form.valid = 'false'; // поменять на watchedState
-        elements.input.style.border = '1px solid red';
-      });
-      elements.form.reset()
-  });
+    const value = formData.get('url'); // get value in input
 
-//     try {
-//       const data = {
-//         field: state.form.field
-//       }
-//      // отправить данные на сервер
-//      // поменять статус формы
-//      // state.form.status = 'sent'
-//     }
-//     catch (error) {
-//     // обработка ошибок при отправке
-//     }
-//   })
+    const schema = yup.object().shape({ // give array 'alreadyAddedLinks' (There is not this link)
+      url: yup.string().url().notOneOf(watchedState.form.addedLinks),
+    });
+    schema.validate({ url: value }) // when promis resolve
+      .then(() => { // in case - validation
+        watchedState.form.status = 'sending';
+        watchedState.form.valid = true;
+        watchedState.form.field = value;
+      })
+      .then(() => { // when previous promiss resolve
+        watchedState.form.status = 'sent';
+        watchedState.form.valid = true;
+        watchedState.form.addedLinks.push(value); // add link from input in addedLinks
+      })
+      .catch((error) => { // in case no-valid (if error is on during 'sending' or smth else)
+        watchedState.form.status = 'failed';
+        watchedState.form.valid = false;
+        watchedState.form.errors.push(error); // push error
+      });
+  });
 };
 
 export default app;
