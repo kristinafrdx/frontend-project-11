@@ -35,8 +35,8 @@ const app = () => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const value = formData.get('url'); // get value in input
-
-    const schema = yup.string().url().notOneOf(watchedState.form.addedLinks).trim() // give array 'alreadyAddedLinks' (There is not this link)
+    // give array 'alreadyAddedLinks' (There is not this link)
+    const schema = yup.string().url().notOneOf(watchedState.form.addedLinks).trim();
     schema.validate(value) // when promis resolve
       .then(() => { // in case - validation
         watchedState.form.valid = 'valid';
@@ -44,15 +44,15 @@ const app = () => {
         watchedState.form.addedLinks.push(value);
         watchedState.form.status = 'sent';
         // watchedState.form.field = value;
-       })
+      })
       .catch((error) => { // in case no-valid (if error is on during 'sending' or smth else)
         watchedState.form.valid = 'invalid';
         watchedState.form.errors = error.message; // push error
         watchedState.form.status = 'failed';
       })
       .finally(() => {
-        watchedState.form.status = 'filling'
-      })
+        watchedState.form.status = 'filling';
+      });
   });
 };
 
