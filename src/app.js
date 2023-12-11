@@ -17,14 +17,14 @@ const app = () => {
     form: document.querySelector('form'),
     buttonSubmit: document.querySelector('button[type="submit"]'),
     input: document.querySelector('#url-input'),
-    message: document.querySelector('.feedback'), // a message at the bottom of input
+    feedback: document.querySelector('.feedback'), // a message at the bottom of input
   };
 
   const initialState = {
     form: {
       field: '',
       status: 'filling',
-      valid: true,
+      valid: 'valid',
       addedLinks: [],
       errors: [],
     },
@@ -36,25 +36,23 @@ const app = () => {
     const formData = new FormData(e.target);
     const value = formData.get('url'); // get value in input
 
-    const schema = yup.object().shape({ // give array 'alreadyAddedLinks' (There is not this link)
-      url: yup.string().url().notOneOf(watchedState.form.addedLinks),
-    });
-    schema.validate({ url: value }) // when promis resolve
+    const schema = yup.string().url().notOneOf(watchedState.form.addedLinks).trim() // give array 'alreadyAddedLinks' (There is not this link)
+    schema.validate(value) // when promis resolve
       .then(() => { // in case - validation
+        watchedState.form.valid = 'valid';
         watchedState.form.status = 'sending';
-        watchedState.form.valid = true;
-        watchedState.form.field = value;
-      })
-      .then(() => { // when previous promiss resolve
+        watchedState.form.addedLinks.push(value);
         watchedState.form.status = 'sent';
-        watchedState.form.valid = true;
-        watchedState.form.addedLinks.push(value); // add link from input in addedLinks
-      })
+        // watchedState.form.field = value;
+       })
       .catch((error) => { // in case no-valid (if error is on during 'sending' or smth else)
+        watchedState.form.valid = 'invalid';
+        watchedState.form.errors = error.message; // push error
         watchedState.form.status = 'failed';
-        watchedState.form.valid = false;
-        watchedState.form.errors.push(error); // push error
-      });
+      })
+      .finally(() => {
+        watchedState.form.status = 'filling'
+      })
   });
 };
 
