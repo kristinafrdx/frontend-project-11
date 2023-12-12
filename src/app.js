@@ -1,8 +1,10 @@
 import * as yup from 'yup';
 import onChange from 'on-change';
 import i18next from 'i18next';
+import axios from 'axios';
 import render from './view.js';
 import ru from './locales/ru.js';
+import parser from './parser.js';
 
 const app = () => {
   // step 1: get DOM elements
@@ -20,6 +22,7 @@ const app = () => {
       valid: 'valid',
       addedLinks: [], // save already addded links
       errors: [],
+      feeds: [],
     },
   };
   // step 3: init i18Next
@@ -41,13 +44,17 @@ const app = () => {
           url: i18Instance.t('invalidLink'),
         },
       });
-  // step 5: watch for state
+      // step 5: watch for state
       const watchedState = onChange(initialState, render(initialState, elements, i18Instance));
 
       elements.form.addEventListener('submit', (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
         const value = formData.get('url'); // get value in input
+
+        // get response (get feeds from the link)
+        const response = axios.get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(value)}`);
+        const parsData = parser(response);
 
         const schema = yup.string()
           .trim()
