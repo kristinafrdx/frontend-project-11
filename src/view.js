@@ -18,6 +18,9 @@ const finishErrorHandler = (elem, i18Instance) => {
   elements.form.reset();
 };
 
+// const addFeeds = (feeds) => {
+// }
+
 const render = (state, elements, i18Instance) => (path, value) => {
   switch (path) {
     case 'form.status':
@@ -26,6 +29,7 @@ const render = (state, elements, i18Instance) => (path, value) => {
       }
       if (value === 'sent') {
         finishErrorHandler(elements, i18Instance);
+        // addFeeds(state.form.feeds)
       }
       break;
     default:

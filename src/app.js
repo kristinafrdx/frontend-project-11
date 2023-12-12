@@ -51,10 +51,12 @@ const app = () => {
         e.preventDefault();
         const formData = new FormData(e.target);
         const value = formData.get('url'); // get value in input
-
+        
         // get response (get feeds from the link)
-        const response = axios.get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(value)}`);
-        const parsData = parser(response);
+        const response = axios.get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(value)}`)
+          .then(() => {
+            parser(response);
+          });
         
         const schema = yup.string()
           .trim()
