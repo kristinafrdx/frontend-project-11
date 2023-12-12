@@ -55,7 +55,7 @@ const app = () => {
         // get response (get feeds from the link)
         const response = axios.get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(value)}`);
         const parsData = parser(response);
-
+        
         const schema = yup.string()
           .trim()
           .url(i18Instance.t('errors.invalidLink')) // instead of message of error - message from locales/ru.js
