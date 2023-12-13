@@ -8,5 +8,6 @@ export default {
     },
     feeds: 'Фиды',
     posts: 'Посты',
+    show: 'Просмотр',
   },
 };

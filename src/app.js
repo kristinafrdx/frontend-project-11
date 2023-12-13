@@ -2,16 +2,11 @@ import * as yup from 'yup';
 import onChange from 'on-change';
 import i18next from 'i18next';
 import axios from 'axios';
+import { uniqueId } from 'lodash';
 import render from './view.js';
 import ru from './locales/ru.js';
 import parser from './parser.js';
 
-// let currentId = 1;
-// const getId = () => {
-//   const id = currentId;
-//   currentId += 1;
-//   return id;
-// };
 const getAxiosResponse = (link) => axios.get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(link)}`);
 
 const app = () => {
@@ -73,17 +68,24 @@ const app = () => {
           .then((parsRss) => {
             const feedTitle = parsRss.feed.titleChannel; // get title in feed
             const feedDescription = parsRss.feed.descriptionChannel; // get description in feed
+            const feedId = uniqueId();
 
             const posts = parsRss.posts.map((item) => {
+              const postId = uniqueId();
               const postTitle = item.title; // get title in posts
               const postDescription = item.description; // get description in post
               const postLink = item.link; // get link in post
-              return { postTitle, postDescription, postLink };
+              return {
+                postId,
+                postTitle,
+                postDescription,
+                postLink,
+              };
             });
             // add feeds to watchedState
-            watchedState.form.feeds.push({ title: feedTitle, description: feedDescription });
+            watchedState.form.feeds.push({ feedId, feedTitle, feedDescription });
             // add posts to watchedState
-            // watchedState.form.posts.push({ postTitle, postDescription, postLink});
+            watchedState.form.posts = posts.concat(watchedState.form.posts);
           })
           .then(() => { // in case - validation
             watchedState.form.valid = 'valid';
