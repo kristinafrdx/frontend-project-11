@@ -73,6 +73,10 @@ const makeContainer = (elem, state, titleName, i18Instance) => {
       button.setAttribute('data-bs-target', '#modal');
       button.textContent = i18Instance.t('show');
 
+      // modal window:
+      elements.modalTitle.textContent = post.postTitle;
+      elements.modalDescription.textContent = post.postDescription;
+      elements.showFull.setAttribute('href', post.postLink);
       li.append(a, button);
       ul.append(li);
     });

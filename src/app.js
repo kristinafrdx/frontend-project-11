@@ -18,6 +18,9 @@ const app = () => {
     feedback: document.querySelector('.feedback'), // a message at the bottom of input
     feeds: document.querySelector('.feeds'),
     posts: document.querySelector('.posts'),
+    modalTitle: document.querySelector('.modal-title'),
+    modalDescription: document.querySelector('.modal-body'),
+    showFull: document.querySelector('.full-article'),
   };
   // step 2: init state
   const initialState = {
