@@ -6,5 +6,7 @@ export default {
       addedLink: 'RSS уже существует',
       notRss: 'Ресурс не содержит валидный RSS',
     },
+    feeds: 'Фиды',
+    posts: 'Посты',
   },
 };

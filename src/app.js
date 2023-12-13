@@ -21,6 +21,8 @@ const app = () => {
     buttonSubmit: document.querySelector('button[type="submit"]'),
     input: document.querySelector('#url-input'),
     feedback: document.querySelector('.feedback'), // a message at the bottom of input
+    feeds: document.querySelector('.feeds'),
+    posts: document.querySelector('.posts'),
   };
   // step 2: init state
   const initialState = {
@@ -80,7 +82,8 @@ const app = () => {
             });
             // add feeds to watchedState
             watchedState.form.feeds.push({ title: feedTitle, description: feedDescription });
-            watchedState.form.posts.push(...posts); // add posts to watchedState
+            // add posts to watchedState
+            // watchedState.form.posts.push({ postTitle, postDescription, postLink});
           })
           .then(() => { // in case - validation
             watchedState.form.valid = 'valid';
