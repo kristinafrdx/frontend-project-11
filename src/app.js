@@ -65,10 +65,23 @@ const app = () => {
           .trim()
           .url(i18Instance.t('errors.invalidLink')) // instead of message of error - message from locales/ru.js
           .notOneOf(watchedState.form.addedLinks, i18Instance.t('errors.addedLink')) // the same
-          .validate(value) // when promis resolve
-          .then((url) => getAxiosResponse(url))
-          .then((response) => parser(response))
+          .validate(value) // check validation
+          .then((url) => getAxiosResponse(url)) // get response
+          .then((response) => parser(response)) // parsing => return {feed, posts}
+          .then((parsRss) => {
+            const feedTitle = parsRss.feed.titleChannel; // get title in feed
+            const feedDescription = parsRss.feed.descriptionChannel; // get description in feed
 
+            const posts = parsRss.posts.map((item) => {
+              const postTitle = item.title; // get title in posts
+              const postDescription = item.description; // get description in post
+              const postLink = item.link; // get link in post
+              return { postTitle, postDescription, postLink };
+            });
+            // add feeds to watchedState
+            watchedState.form.feeds.push({ title: feedTitle, description: feedDescription });
+            watchedState.form.posts.push(...posts); // add posts to watchedState
+          })
           .then(() => { // in case - validation
             watchedState.form.valid = 'valid';
             watchedState.form.status = 'sending';

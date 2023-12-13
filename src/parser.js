@@ -18,7 +18,6 @@ export default (request) => {
       link,
     };
   });
-
   const parseRss = { feed, posts };
   return Promise.resolve(parseRss);
 };
