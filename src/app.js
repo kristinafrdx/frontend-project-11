@@ -6,6 +6,14 @@ import render from './view.js';
 import ru from './locales/ru.js';
 import parser from './parser.js';
 
+// let currentId = 1;
+// const getId = () => {
+//   const id = currentId;
+//   currentId += 1;
+//   return id;
+// };
+const getAxiosResponse = (link) => axios.get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(link)}`);
+
 const app = () => {
   // step 1: get DOM elements
   const elements = {
@@ -58,12 +66,9 @@ const app = () => {
           .url(i18Instance.t('errors.invalidLink')) // instead of message of error - message from locales/ru.js
           .notOneOf(watchedState.form.addedLinks, i18Instance.t('errors.addedLink')) // the same
           .validate(value) // when promis resolve
-          .then((value) => {
-            axios.get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(value)}`)
-            .then((response) => {
-              parser(response)
-            })
-          })
+          .then((url) => getAxiosResponse(url))
+          .then((response) => parser(response))
+
           .then(() => { // in case - validation
             watchedState.form.valid = 'valid';
             watchedState.form.status = 'sending';

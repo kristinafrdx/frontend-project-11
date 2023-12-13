@@ -1,10 +1,10 @@
 export default (request) => {
   const parser = new DOMParser();
   const xmlDoc = parser.parseFromString(request.data.contents, 'application/xml');
-  
+
   const channel = xmlDoc.querySelector('channel');
   const titleChannel = xmlDoc.querySelector('channel title').textContent;
-  const descriptionChannel = xmlDoc.querySelector('channel description').textContent
+  const descriptionChannel = xmlDoc.querySelector('channel description').textContent;
   const feed = { titleChannel, descriptionChannel };
 
   const itemElements = channel.getElementsByTagName('item');
@@ -20,6 +20,5 @@ export default (request) => {
   });
 
   const parseRss = { feed, posts };
-  return Promise.resolve(parseRss)
+  return Promise.resolve(parseRss);
 };
-
