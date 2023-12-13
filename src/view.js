@@ -19,6 +19,7 @@ const finishErrorHandler = (elem, i18Instance) => {
 };
 
 // const addFeeds = (feeds) => {
+   
 // }
 
 const render = (state, elements, i18Instance) => (path, value) => {

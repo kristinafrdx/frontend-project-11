@@ -23,6 +23,7 @@ const app = () => {
       addedLinks: [], // save already addded links
       errors: [],
       feeds: [],
+      posts: [],
     },
   };
   // step 3: init i18Next
@@ -34,7 +35,7 @@ const app = () => {
       ru,
     },
   })
-  // step 4: set locale "notOneOf()" for using links were already added
+    // step 4: set locale "notOneOf()" for using links were already added
     .then(() => {
       yup.setLocale({
         mixed: {
@@ -51,19 +52,18 @@ const app = () => {
         e.preventDefault();
         const formData = new FormData(e.target);
         const value = formData.get('url'); // get value in input
-        
-        // get response (get feeds from the link)
-        const response = axios.get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(value)}`)
-          .then(() => {
-            parser(response);
-          });
-        
-        const schema = yup.string()
+        yup
+          .string()
           .trim()
           .url(i18Instance.t('errors.invalidLink')) // instead of message of error - message from locales/ru.js
-          .notOneOf(watchedState.form.addedLinks, i18Instance.t('errors.addedLink')); // the same
-
-        schema.validate(value) // when promis resolve
+          .notOneOf(watchedState.form.addedLinks, i18Instance.t('errors.addedLink')) // the same
+          .validate(value) // when promis resolve
+          .then((value) => {
+            axios.get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(value)}`)
+            .then((response) => {
+              parser(response)
+            })
+          })
           .then(() => { // in case - validation
             watchedState.form.valid = 'valid';
             watchedState.form.status = 'sending';
