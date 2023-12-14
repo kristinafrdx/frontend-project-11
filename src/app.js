@@ -66,6 +66,7 @@ const app = () => {
           .trim()
           .url(i18Instance.t('errors.invalidLink')) // instead of message of error - message from locales/ru.js
           .notOneOf(watchedState.form.addedLinks, i18Instance.t('errors.addedLink')) // the same
+          .required(i18Instance.t('errors.require'))
           .validate(value) // check validation
           .then((url) => getAxiosResponse(url)) // get response
           .then((response) => parser(response)) // parsing => return {feed, posts}
