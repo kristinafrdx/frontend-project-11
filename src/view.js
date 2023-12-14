@@ -18,15 +18,6 @@ const finishErrorHandler = (elem, i18Instance) => {
   elements.form.reset();
 };
 
-// const renderModalWindow = (a, elem, post) => {
-//   a.classList.remove('fw-bold');
-//   a.classList.add('fw-normal', 'text-muted');
-//   const elements = { ...elem };
-//   elements.modalTitle.textContent = post.postTitle;
-//   elements.modalDescription.textContent = post.postDescription;
-//   elements.modalLink.setAttribute('href', post.postLink);
-// };
-
 // <div class="col-md-10 col-lg-4 mx-auto order-0 order-lg-1 feeds"
 const makeContainer = (elem, state, titleName, i18Instance) => {
   const elements = { ...elem };
@@ -68,7 +59,13 @@ const makeContainer = (elem, state, titleName, i18Instance) => {
       const li = document.createElement('li');
       li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
       const a = document.createElement('a');
-      a.classList.add('fw-bold');
+      console.log(post.postId);
+      // const styleText = state.form.readPost.includes(post.postId) ? 'fw-normal' : 'fw-bold'
+      // a.classList.add(styleText);
+      li.addEventListener('click', () => {
+        a.classList.remove('fw-bold');
+        a.classList.add('text-muted', 'fw-normal');
+      });
       a.dataset.id = post.postId;
       a.setAttribute('target', '_blank');
       a.setAttribute('rel', 'noopener noreferrer');
@@ -113,8 +110,6 @@ const render = (state, elements, i18Instance) => (path, value) => {
         const title = post.postTitle;
         const description = post.postDescription;
         const link = post.postLink;
-        // const id = post.postId;
-
         elements.modalTitle.textContent = title;
         elements.modalDescription.textContent = description;
         elements.modalLink.setAttribute('href', link);

@@ -110,6 +110,7 @@ const app = () => {
             watchedState.form.status = 'filling';
           });
       });
+
       // if (watchedState.form.openedModal === true) {
       elements.posts.addEventListener('click', (e) => {
         if (e.target.dataset.id) { // if click was on button
