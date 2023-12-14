@@ -75,7 +75,6 @@ const makeContainer = (elem, state, titleName, i18Instance) => {
       const a = document.createElement('a');
       a.classList.add('fw-bold');
       a.dataset.id = post.postId;
-      a.setAttribute('name', 'link')
       a.setAttribute('target', '_blank');
       a.setAttribute('rel', 'noopener noreferrer');
       a.setAttribute('href', post.postLink);
