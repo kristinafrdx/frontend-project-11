@@ -18,6 +18,20 @@ const finishErrorHandler = (elem, i18Instance) => {
   elements.form.reset();
 };
 
+const renderModalWindow = (elem, posts) => {
+  const elements = { ...elem };
+  const result = posts.forEach((post) => {
+    const title = post.postTitle;
+    const description = post.postDescription;
+    const link = post.postLink;
+
+    elements.modalTitle.textContent = title;
+    elements.modalDescription.textContent = description;
+    elements.modalLink.setAttribute('href', link);
+  });
+  return result;
+};
+
 // <div class="col-md-10 col-lg-4 mx-auto order-0 order-lg-1 feeds"
 const makeContainer = (elem, state, titleName, i18Instance) => {
   const elements = { ...elem };
@@ -59,13 +73,7 @@ const makeContainer = (elem, state, titleName, i18Instance) => {
       const li = document.createElement('li');
       li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
       const a = document.createElement('a');
-      console.log(post.postId);
-      // const styleText = state.form.readPost.includes(post.postId) ? 'fw-normal' : 'fw-bold'
-      // a.classList.add(styleText);
-      li.addEventListener('click', () => {
-        a.classList.remove('fw-bold');
-        a.classList.add('text-muted', 'fw-normal');
-      });
+      a.classList.add('fw-bold');
       a.dataset.id = post.postId;
       a.setAttribute('target', '_blank');
       a.setAttribute('rel', 'noopener noreferrer');
@@ -106,14 +114,13 @@ const render = (state, elements, i18Instance) => (path, value) => {
       break;
     }
     case 'form.readPost': {
-      value.forEach((post) => {
-        const title = post.postTitle;
-        const description = post.postDescription;
-        const link = post.postLink;
-        elements.modalTitle.textContent = title;
-        elements.modalDescription.textContent = description;
-        elements.modalLink.setAttribute('href', link);
-      });
+      renderModalWindow(elements, value);
+      break;
+    }
+    case 'form.activePost': {
+      const linkDom = document.querySelector(`[data-id="${value}"]`);
+      linkDom.classList.remove('fw-bold');
+      linkDom.classList.add('fw-normal', 'text-muted');
       break;
     }
     default:

@@ -33,7 +33,6 @@ const app = () => {
       posts: [],
       readPost: [],
       activePost: null,
-      openedModal: false,
     },
   };
   // step 3: init i18Next
@@ -113,11 +112,13 @@ const app = () => {
 
       // if (watchedState.form.openedModal === true) {
       elements.posts.addEventListener('click', (e) => {
-        if (e.target.dataset.id) { // if click was on button
-          const selectPost = watchedState.form.posts.find((post) => e.target.dataset.id === post.postId);
+        const idClick = e.target.dataset.id; // id place where was click(post or modalWindow)
+        if (idClick) { // if click was on button
+          // selectPost - looking for the post in watchedState.form.posts, where was click
+          const selectPost = watchedState.form.posts.find((post) => idClick === post.postId);
+          // change state for change style of text - id of click
           watchedState.form.activePost = selectPost.postId;
-          watchedState.form.openedModal = true;
-          watchedState.form.readPost.push(selectPost);
+          watchedState.form.readPost.push(selectPost); // add selectPost in watchedState
         }
       });
       // }
