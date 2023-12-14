@@ -32,7 +32,8 @@ const app = () => {
       feeds: [],
       posts: [],
       readPost: [],
-      activePost: [],
+      activePost: null,
+      openedModal: false,
     },
   };
   // step 3: init i18Next
@@ -109,6 +110,16 @@ const app = () => {
             watchedState.form.status = 'filling';
           });
       });
+      // if (watchedState.form.openedModal === true) {
+      elements.posts.addEventListener('click', (e) => {
+        if (e.target.dataset.id) { // if click was on button
+          const selectPost = watchedState.form.posts.find((post) => e.target.dataset.id === post.postId);
+          watchedState.form.activePost = selectPost.postId;
+          watchedState.form.openedModal = true;
+          watchedState.form.readPost.push(selectPost);
+        }
+      });
+      // }
     });
 };
 

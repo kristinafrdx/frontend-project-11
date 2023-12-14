@@ -18,14 +18,14 @@ const finishErrorHandler = (elem, i18Instance) => {
   elements.form.reset();
 };
 
-const renderModalWindow = (a, elem, post) => {
-  a.classList.remove('fw-bold');
-  a.classList.add('fw-normal', 'text-muted');
-  const elements = { ...elem };
-  elements.modalTitle.textContent = post.postTitle;
-  elements.modalDescription.textContent = post.postDescription;
-  elements.modalLink.setAttribute('href', post.postLink);
-};
+// const renderModalWindow = (a, elem, post) => {
+//   a.classList.remove('fw-bold');
+//   a.classList.add('fw-normal', 'text-muted');
+//   const elements = { ...elem };
+//   elements.modalTitle.textContent = post.postTitle;
+//   elements.modalDescription.textContent = post.postDescription;
+//   elements.modalLink.setAttribute('href', post.postLink);
+// };
 
 // <div class="col-md-10 col-lg-4 mx-auto order-0 order-lg-1 feeds"
 const makeContainer = (elem, state, titleName, i18Instance) => {
@@ -83,7 +83,6 @@ const makeContainer = (elem, state, titleName, i18Instance) => {
       button.dataset.bsTarget = '#modal';
       button.textContent = i18Instance.t('show');
 
-      li.addEventListener('click', () => renderModalWindow(a, elements, post));
       li.append(a, button);
       ul.append(li);
     });
@@ -107,6 +106,19 @@ const render = (state, elements, i18Instance) => (path, value) => {
     }
     case 'form.posts': {
       makeContainer(elements, state, 'posts', i18Instance);
+      break;
+    }
+    case 'form.readPost': {
+      value.forEach((post) => {
+        const title = post.postTitle;
+        const description = post.postDescription;
+        const link = post.postLink;
+        // const id = post.postId;
+
+        elements.modalTitle.textContent = title;
+        elements.modalDescription.textContent = description;
+        elements.modalLink.setAttribute('href', link);
+      });
       break;
     }
     default:
