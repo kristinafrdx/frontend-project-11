@@ -6,6 +6,7 @@ export default {
       addedLink: 'RSS уже существует',
       notRss: 'Ресурс не содержит валидный RSS',
       require: 'Не должно быть пустым',
+      networkError: 'Ошибка сети',
     },
     feeds: 'Фиды',
     posts: 'Посты',

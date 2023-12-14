@@ -103,7 +103,11 @@ const app = () => {
           })
           .catch((error) => { // in case no-valid (if error is on during 'sending' or smth else)
             watchedState.form.valid = 'invalid';
-            watchedState.form.errors = error.message; // push error
+            if (error.message === 'Network Error') {
+              watchedState.form.errors = i18Instance.t('errors.networkError');
+            } else {
+              watchedState.form.errors = error.message; // push last error
+            }
             watchedState.form.status = 'failed';
           })
           .finally(() => {
