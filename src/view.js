@@ -75,6 +75,7 @@ const makeContainer = (elem, state, titleName, i18Instance) => {
       const a = document.createElement('a');
       a.classList.add('fw-bold');
       a.dataset.id = post.postId;
+      a.setAttribute('name', 'link')
       a.setAttribute('target', '_blank');
       a.setAttribute('rel', 'noopener noreferrer');
       a.setAttribute('href', post.postLink);
@@ -118,6 +119,7 @@ const render = (state, elements, i18Instance) => (path, value) => {
       break;
     }
     case 'form.activePost': {
+      // get link in dom by id
       const linkDom = document.querySelector(`[data-id="${value}"]`);
       linkDom.classList.remove('fw-bold');
       linkDom.classList.add('fw-normal', 'text-muted');
