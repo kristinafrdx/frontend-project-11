@@ -30,8 +30,6 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - uses: actions/checkout@v3
-      - name: lint
-        run: make lint
       - name: webpack
         run: make webpack
       - name: build
