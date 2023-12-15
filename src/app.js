@@ -9,6 +9,17 @@ import parser from './parser.js';
 
 const getAxiosResponse = (link) => axios.get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(link)}`);
 
+// const updatePosts = (elements, state) => {
+//   const existPosts = state.form.posts;
+//   const url = state.form.field;
+//   const uniqPost = [];
+//   getAxiosResponse(url)
+//   .then((data) => parser(data))
+//   .then((newPosts) => {
+//     // Находим уникальные новые посты, которых еще нет в текущем стейте
+//   })
+// }
+
 const app = () => {
   // step 1: get DOM elements
   const elements = {
@@ -100,6 +111,7 @@ const app = () => {
             watchedState.form.addedLinks.push(value);
             watchedState.form.status = 'sent';
             watchedState.form.field = value;
+            // setTimeout(() => updatePosts(elements, watchedState), 5000);
           })
           .catch((error) => { // in case no-valid (if error is on during 'sending' or smth else)
             watchedState.form.valid = 'invalid';
@@ -126,7 +138,6 @@ const app = () => {
           watchedState.form.readPost.push(selectPost); // add selectPost in watchedState
         }
       });
-      // }
     });
 };
 
