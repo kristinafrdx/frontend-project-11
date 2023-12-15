@@ -18,8 +18,8 @@ jobs:
         node-version: [18.x]
 
     steps:
-      # Check-out repository under GitHub workspace
-      # https://github.com/actions/checkout
+        # Check-out repository under GitHub workspace
+        # https://github.com/actions/checkout
       - uses: actions/checkout@v3
         # Step's name
       - name: Use Node.js ${{ matrix.node-version }}
@@ -29,14 +29,9 @@ jobs:
         # The Node.js version to configure
         with:
           node-version: ${{ matrix.node-version }}
-      - uses: actions/checkout@v3
-      - name: webpack
-        run: make webpack
-      - name: build
-        run: make build
-      - name: publish
-        run: make publish
-      - name: install
-        run: make install
-        env:
-          CI: true
+          cache: 'npm'
+      - run: make install
+      - run: make lint
+      - run: make webpack
+      - run: make build
+      - run: make publish
