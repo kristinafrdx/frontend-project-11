@@ -8,9 +8,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: lint
-        run: npx eslint .
+        run: make lint
       - name: webpack
-        run: npx webpack serve
+        run: make webpack
       - name: build
         run: make build
       - name: publish
