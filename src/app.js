@@ -10,23 +10,23 @@ import parser from './parser.js';
 const getAxiosResponse = (link) => axios.get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(link)}`);
 
 const updatePosts = (state) => {
-  const existPosts = state.form.posts;
+  const stateCopy = { ...state };
+  const existPosts = stateCopy.form.posts;
   const oldPosts = cloneDeep(existPosts);
   const url = state.form.field;
   getAxiosResponse(url)
     .then((data) => parser(data))
     .then((newData) => {
       const newPosts = newData.posts;
-      newPosts.map((newPost) => {
+      newPosts.forEach((newPost) => {
         const foundsPosts = !oldPosts.find((oldPost) => oldPost.postLink === newPost.link);
         if (foundsPosts) {
           state.form.posts.push(foundsPosts);
         }
-        return state;
       });
     })
     .catch((error) => {
-      state.form.error.push(error.message);
+      stateCopy.form.errors = error.message;
     })
     .then(() => {
       setTimeout(() => updatePosts(state), 5000);

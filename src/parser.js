@@ -2,6 +2,10 @@ export default (request) => {
   const parser = new DOMParser();
   const xmlDoc = parser.parseFromString(request.data.contents, 'application/xml');
 
+  if (!xmlDoc.querySelector('rss')) {
+    throw new Error('Ресурс не содержит валидный RSS');
+  }
+
   const channel = xmlDoc.querySelector('channel');
   const titleChannel = xmlDoc.querySelector('channel title').textContent;
   const descriptionChannel = xmlDoc.querySelector('channel description').textContent;
