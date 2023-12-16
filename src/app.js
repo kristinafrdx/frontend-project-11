@@ -2,23 +2,36 @@ import * as yup from 'yup';
 import onChange from 'on-change';
 import i18next from 'i18next';
 import axios from 'axios';
-import { uniqueId } from 'lodash';
+import { uniqueId, cloneDeep } from 'lodash';
 import render from './view.js';
 import ru from './locales/ru.js';
 import parser from './parser.js';
 
 const getAxiosResponse = (link) => axios.get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(link)}`);
 
-// const updatePosts = (elements, state) => {
-//   const existPosts = state.form.posts;
-//   const url = state.form.field;
-//   const uniqPost = [];
-//   getAxiosResponse(url)
-//   .then((data) => parser(data))
-//   .then((newPosts) => {
-//     // Находим уникальные новые посты, которых еще нет в текущем стейте
-//   })
-// }
+const updatePosts = (state) => {
+  const existPosts = state.form.posts;
+  const oldPosts = cloneDeep(existPosts);
+  const url = state.form.field;
+  getAxiosResponse(url)
+    .then((data) => parser(data))
+    .then((newData) => {
+      const newPosts = newData.posts;
+      newPosts.map((newPost) => {
+        const foundsPosts = !oldPosts.find((oldPost) => oldPost.postLink === newPost.link);
+        if (foundsPosts) {
+          state.form.posts.push(foundsPosts);
+        }
+        return state;
+      });
+    })
+    .catch((error) => {
+      state.form.error.push(error.message);
+    })
+    .then(() => {
+      setTimeout(() => updatePosts(state), 5000);
+    });
+};
 
 const app = () => {
   // step 1: get DOM elements
@@ -111,7 +124,7 @@ const app = () => {
             watchedState.form.addedLinks.push(value);
             watchedState.form.status = 'sent';
             watchedState.form.field = value;
-            // setTimeout(() => updatePosts(elements, watchedState), 5000);
+            updatePosts(watchedState);
           })
           .catch((error) => { // in case no-valid (if error is on during 'sending' or smth else)
             watchedState.form.valid = 'invalid';
