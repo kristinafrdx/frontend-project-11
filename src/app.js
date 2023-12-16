@@ -44,6 +44,7 @@ const app = () => {
     modalTitle: document.querySelector('.modal-title'),
     modalDescription: document.querySelector('.modal-body'),
     modalLink: document.querySelector('.full-article'),
+    buttonSent: document.querySelector('button[type="submit"]'),
   };
   // step 2: init state
   const initialState = {
@@ -140,7 +141,6 @@ const app = () => {
           });
       });
 
-      // if (watchedState.form.openedModal === true) {
       elements.posts.addEventListener('click', (e) => {
         const idClick = e.target.dataset.id; // id place where was click(post or modalWindow)
         if (idClick) { // if click was on button

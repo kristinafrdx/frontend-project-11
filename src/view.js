@@ -7,6 +7,7 @@ const errorHandler = (elem, err) => {
   elements.feedback.textContent = err;
   elements.input.focus();
   elements.form.reset();
+  elements.buttonSent.removeAttribute('disabled');
 };
 
 const finishErrorHandler = (elem, i18Instance) => {
@@ -16,6 +17,7 @@ const finishErrorHandler = (elem, i18Instance) => {
   elements.feedback.textContent = i18Instance.t('upload');
   elements.input.focus();
   elements.form.reset();
+  elements.buttonSent.removeAttribute('disabled');
 };
 
 const renderModalWindow = (elem, posts) => {
@@ -103,6 +105,12 @@ const render = (state, elements, i18Instance) => (path, value) => {
       }
       if (value === 'sent') {
         finishErrorHandler(elements, i18Instance);
+      }
+      if (value === 'sending') {
+        elements.buttonSent.setAttribute('disabled', true);
+      }
+      if (value === 'filling') {
+        elements.buttonSent.removeAttribute('disabled');
       }
       break;
     case 'form.feeds': {
