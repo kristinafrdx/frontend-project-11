@@ -117,6 +117,7 @@ const app = () => {
             // add posts to watchedState
             watchedState.form.posts = posts.concat(watchedState.form.posts);
           })
+          .then(() => updatePosts(watchedState))
           .then(() => { // in case - validation
             watchedState.form.valid = 'valid';
             watchedState.form.status = 'sending';
@@ -125,7 +126,6 @@ const app = () => {
             watchedState.form.addedLinks.push(value);
             watchedState.form.status = 'sent';
             watchedState.form.field = value;
-            updatePosts(watchedState);
           })
           .catch((error) => { // in case no-valid (if error is on during 'sending' or smth else)
             watchedState.form.valid = 'invalid';
