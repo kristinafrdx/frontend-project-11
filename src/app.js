@@ -21,7 +21,7 @@ const updatePosts = (state) => {
       newPosts.forEach((newPost) => {
         const foundsPosts = !oldPosts.find((oldPost) => oldPost.postLink === newPost.link);
         if (foundsPosts) {
-          state.form.posts.push(foundsPosts);
+          stateCopy.form.posts.push(newPost);
         }
       });
     })
