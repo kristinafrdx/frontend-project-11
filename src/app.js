@@ -12,16 +12,23 @@ const getAxiosResponse = (link) => axios.get(`https://allorigins.hexlet.app/get?
 const updatePosts = (state) => {
   const stateCopy = { ...state };
   const existPosts = stateCopy.form.posts;
-  const oldPosts = cloneDeep(existPosts);
+  const oldPosts = cloneDeep(existPosts); // clone for working
   const url = state.form.field;
   getAxiosResponse(url)
     .then((data) => parser(data))
     .then((newData) => {
       const newPosts = newData.posts;
-      newPosts.forEach((newPost) => {
-        const foundsPosts = !oldPosts.find((oldPost) => oldPost.postLink === newPost.link);
-        if (foundsPosts) {
-          stateCopy.form.posts.push(newPost);
+
+      // get array of old links
+      const oldLinks = oldPosts.map((post) => post.link);
+
+      // get array of new links
+      const newLinks = newPosts.map((item) => item.link);
+
+      newLinks.forEach((link) => { // get every new link
+        if (!oldLinks.includes(link)) { // if array of old Links NOT includes new link
+          const findedPost = newPosts.find((post) => post.link === link); // get post with this link
+          state.form.posts.unshift(findedPost); // add to state the finded post
         }
       });
     })
@@ -29,7 +36,7 @@ const updatePosts = (state) => {
       stateCopy.form.errors = error.message;
     })
     .then(() => {
-      setTimeout(() => updatePosts(state), 5000);
+      setTimeout(() => updatePosts(state), 5000); // upload every 5 sec
     });
 };
 
@@ -101,15 +108,15 @@ const app = () => {
             const feedId = uniqueId();
 
             const posts = parsRss.posts.map((item) => {
-              const postId = uniqueId();
-              const postTitle = item.title; // get title in posts
-              const postDescription = item.description; // get description in post
-              const postLink = item.link; // get link in post
+              const id = uniqueId();
+              const { title } = item; // get title in posts
+              const { description } = item; // get description in post
+              const { link } = item; // get link in post
               return {
-                postId,
-                postTitle,
-                postDescription,
-                postLink,
+                id,
+                title,
+                description,
+                link,
               };
             });
             // add feeds to watchedState
@@ -125,7 +132,7 @@ const app = () => {
             watchedState.form.addedLinks.push(value);
             watchedState.form.status = 'sent';
             watchedState.form.field = value;
-            updatePosts(watchedState)
+            updatePosts(watchedState);
           })
           .catch((error) => { // in case no-valid (if error is on during 'sending' or smth else)
             watchedState.form.valid = 'invalid';
@@ -145,9 +152,9 @@ const app = () => {
         const idClick = e.target.dataset.id; // id place where was click(post or modalWindow)
         if (idClick) { // if click was on button
           // selectPost - looking for the post in watchedState.form.posts, where was click
-          const selectPost = watchedState.form.posts.find((post) => idClick === post.postId);
+          const selectPost = watchedState.form.posts.find((post) => idClick === post.id);
           // change state for change style of text - id of click
-          watchedState.form.activePost = selectPost.postId;
+          watchedState.form.activePost = selectPost.id;
           watchedState.form.readPost.push(selectPost); // add selectPost in watchedState
         }
       });

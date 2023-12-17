@@ -23,9 +23,9 @@ const finishErrorHandler = (elem, i18Instance) => {
 const renderModalWindow = (elem, posts) => {
   const elements = { ...elem };
   const result = posts.forEach((post) => {
-    const title = post.postTitle;
-    const description = post.postDescription;
-    const link = post.postLink;
+    const { title } = post;
+    const { description } = post;
+    const { link } = post;
 
     elements.modalTitle.textContent = title;
     elements.modalDescription.textContent = description;
@@ -76,16 +76,16 @@ const makeContainer = (elem, state, titleName, i18Instance) => {
       li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
       const a = document.createElement('a');
       a.classList.add('fw-bold');
-      a.dataset.id = post.postId;
+      a.dataset.id = post.id;
       a.setAttribute('target', '_blank');
       a.setAttribute('rel', 'noopener noreferrer');
-      a.setAttribute('href', post.postLink);
-      a.textContent = post.postTitle;
+      a.setAttribute('href', post.link);
+      a.textContent = post.title;
 
       const button = document.createElement('button');
       button.setAttribute('type', 'button');
       button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
-      button.dataset.id = post.postId;
+      button.dataset.id = post.id;
       button.dataset.bsToggle = 'modal';
       button.dataset.bsTarget = '#modal';
       button.textContent = i18Instance.t('show');
