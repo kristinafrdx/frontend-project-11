@@ -75,6 +75,10 @@ const makeContainer = (elem, state, titleName, i18Instance) => {
       li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
       const a = document.createElement('a');
       a.classList.add('fw-bold');
+      if (state.readPost.some((readPost) => readPost.id === post.id)) {
+        a.classList.remove('fw-bold');
+        a.classList.add('fw-normal', 'text-muted');
+      }
       a.dataset.id = post.id;
       a.setAttribute('target', '_blank');
       a.setAttribute('rel', 'noopener noreferrer');

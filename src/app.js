@@ -100,9 +100,13 @@ const app = () => {
 
       elements.form.addEventListener('submit', (e) => {
         e.preventDefault();
+        watchedState.form.status = 'sending';
         const formData = new FormData(e.target);
         const value = formData.get('url');
         validation(value, watchedState.form.addedLinks, i18Instance)
+          // .then(() => {
+          //   watchedState.form.valid = 'valid';
+          // })
           .then((url) => getAxiosResponse(url))
           .then((response) => parser(response))
           .then((parsRss) => {
@@ -128,7 +132,6 @@ const app = () => {
             watchedState.posts = posts.concat(watchedState.posts);
           })
           .then(() => {
-            watchedState.form.status = 'sending';
             watchedState.form.valid = 'valid';
           })
           .then(() => {
@@ -141,6 +144,8 @@ const app = () => {
             watchedState.form.valid = 'invalid';
             if (error.message === 'Network Error') {
               watchedState.errors = i18Instance.t('errors.networkError');
+            } else if (error.message === 'notRss') {
+              watchedState.errors = i18Instance.t('errors.notRss');
             } else {
               watchedState.errors = error.message; // push last error
             }
@@ -157,8 +162,10 @@ const app = () => {
           // looking for the post in watchedState.posts, where was click
           const selectPost = watchedState.posts.find((post) => idClick === post.id);
           // change style of text - id of click
-          watchedState.activePost = selectPost.id;
-          watchedState.readPost.push(selectPost);
+          if (selectPost) {
+            watchedState.activePost = selectPost.id;
+            watchedState.readPost.push(selectPost);
+          }
         }
       });
     });
