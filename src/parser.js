@@ -2,7 +2,7 @@ export default (request) => {
   const parser = new DOMParser();
   const xmlDoc = parser.parseFromString(request.data.contents, 'application/xml');
 
-  if (xmlDoc.querySelector('parsererror')) {
+  if (!xmlDoc.querySelector('rss')) {
     throw new Error('Ресурс не содержит валидный RSS');
   }
 
