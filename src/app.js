@@ -128,8 +128,8 @@ const app = () => {
             watchedState.posts = posts.concat(watchedState.posts);
           })
           .then(() => {
-            watchedState.form.valid = 'valid';
             watchedState.form.status = 'sending';
+            watchedState.form.valid = 'valid';
           })
           .then(() => {
             watchedState.form.addedLinks.push(value);
@@ -141,6 +141,8 @@ const app = () => {
             watchedState.form.valid = 'invalid';
             if (error.message === 'Network Error') {
               watchedState.errors = i18Instance.t('errors.networkError');
+            } else if (error.message === 'notRss') {
+              watchedState.errors = i18Instance.t('errors.notRss');
             } else {
               watchedState.errors = error.message; // push last error
             }
