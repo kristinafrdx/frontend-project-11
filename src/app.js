@@ -25,11 +25,17 @@ const validation = (url, addedLinks, i18Instance) => {
   return schema;
 };
 
-const createFeed = (parsRss) => {
+const createFeed = (parsRss, value) => {
   const feedTitle = parsRss.titleChannel;
   const feedDescription = parsRss.descriptionChannel;
   const feedId = uniqueId();
-  return { feedTitle, feedDescription, feedId };
+  const feedLink = value;
+  return {
+    feedTitle,
+    feedDescription,
+    feedId,
+    feedLink,
+  };
 };
 
 const createPost = (newPosts) => {
@@ -51,29 +57,35 @@ const createPost = (newPosts) => {
 const updatePosts = (state, time) => {
   const stateCopy = { ...state };
   const existPosts = stateCopy.posts;
-  const url = state.form.field;
-  getAxiosResponse(url)
+  const { feeds } = stateCopy;
+
+  const feedPromises = feeds.map((feed) => getAxiosResponse(feed.feedLink) // upload for EVERY feed
     .then((data) => parser(data))
-    .then((newData) => {
-      const posts = createPost(newData.posts);
+    .then((parseData) => createPost(parseData.posts))
+    .catch((error) => {
+      stateCopy.errors = error.message;
+    }));
+  Promise.all(feedPromises) // wait all
+    .then((posts) => {
+      const newPosts = posts.flat();
+
       // get array of old links
       const oldLinks = existPosts.map((post) => post.link);
 
       // get array of new links
-      const newLinks = posts.map((item) => item.link);
+      const newLinks = newPosts.map((item) => item.link);
 
       newLinks.forEach((link) => { // get every new link
         if (!oldLinks.includes(link)) {
-          const findedPost = posts.find((post) => post.link === link); // get post with this link
+          const findedPost = newPosts.find((post) => post.link === link); // get post with that link
           state.posts.unshift(findedPost); // add to state the finded post
-          console.log(findedPost);
         }
       });
     })
     .catch((error) => {
       stateCopy.errors = error.message;
     })
-    .then(() => {
+    .finally(() => {
       setTimeout(() => updatePosts(state), time);
     });
 };
@@ -137,7 +149,7 @@ const app = () => {
           .then((url) => getAxiosResponse(url))
           .then((response) => parser(response))
           .then((parsRss) => {
-            const feed = createFeed(parsRss.feed);
+            const feed = createFeed(parsRss.feed, value);
             const posts = createPost(parsRss.posts);
 
             // add feeds to watchedState
