@@ -26,10 +26,14 @@ const renderModalWindow = (elem, posts) => {
     const { title } = post;
     const { description } = post;
     const { link } = post;
-
+    const { id } = post;
     elements.modalTitle.textContent = title;
     elements.modalDescription.textContent = description;
     elements.modalLink.setAttribute('href', link);
+
+    const linkDom = document.querySelector(`[data-id="${id}"]`); // change style of text
+    linkDom.classList.remove('fw-bold');
+    linkDom.classList.add('fw-normal', 'text-muted');
   });
   return result;
 };
@@ -74,11 +78,14 @@ const makeContainer = (elem, state, titleName, i18Instance) => {
       const li = document.createElement('li');
       li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
       const a = document.createElement('a');
-      a.classList.add('fw-bold');
-      if (state.readPost.some((readPost) => readPost.id === post.id)) {
+
+      if (state.readPost.find((redPost) => redPost.id === post.id)) {
         a.classList.remove('fw-bold');
         a.classList.add('fw-normal', 'text-muted');
+      } else {
+        a.classList.add('fw-bold');
       }
+
       a.dataset.id = post.id;
       a.setAttribute('target', '_blank');
       a.setAttribute('rel', 'noopener noreferrer');
@@ -127,12 +134,6 @@ const render = (state, elements, i18Instance) => (path, value) => {
     }
     case 'readPost': {
       renderModalWindow(elements, value);
-      break;
-    }
-    case 'activePost': {
-      const linkDom = document.querySelector(`[data-id="${value}"]`);
-      linkDom.classList.remove('fw-bold');
-      linkDom.classList.add('fw-normal', 'text-muted');
       break;
     }
     default:

@@ -9,7 +9,11 @@ import parser from './parser.js';
 
 const timeOut = 5000;
 const defaultLang = 'ru';
-const getAxiosResponse = (link) => axios.get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(link)}`);
+
+const getAxiosResponse = (link) => {
+  const url = `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(link)}`;
+  return axios.get(url, { timeout: 10000 });
+};
 
 const validation = (url, addedLinks, i18Instance) => {
   const schema = yup.string()
@@ -21,6 +25,29 @@ const validation = (url, addedLinks, i18Instance) => {
   return schema;
 };
 
+const createFeed = (parsRss) => {
+  const feedTitle = parsRss.titleChannel;
+  const feedDescription = parsRss.descriptionChannel;
+  const feedId = uniqueId();
+  return { feedTitle, feedDescription, feedId };
+};
+
+const createPost = (newPosts) => {
+  const posts = newPosts.map((item) => {
+    const id = uniqueId();
+    const { title } = item;
+    const { description } = item;
+    const { link } = item;
+    return {
+      id,
+      title,
+      description,
+      link,
+    };
+  });
+  return posts;
+};
+
 const updatePosts = (state, time) => {
   const stateCopy = { ...state };
   const existPosts = stateCopy.posts;
@@ -28,18 +55,18 @@ const updatePosts = (state, time) => {
   getAxiosResponse(url)
     .then((data) => parser(data))
     .then((newData) => {
-      const newPosts = newData.posts;
-
+      const posts = createPost(newData.posts);
       // get array of old links
       const oldLinks = existPosts.map((post) => post.link);
 
       // get array of new links
-      const newLinks = newPosts.map((item) => item.link);
+      const newLinks = posts.map((item) => item.link);
 
       newLinks.forEach((link) => { // get every new link
         if (!oldLinks.includes(link)) {
-          const findedPost = newPosts.find((post) => post.link === link); // get post with this link
+          const findedPost = posts.find((post) => post.link === link); // get post with this link
           state.posts.unshift(findedPost); // add to state the finded post
+          console.log(findedPost);
         }
       });
     })
@@ -110,31 +137,16 @@ const app = () => {
           .then((url) => getAxiosResponse(url))
           .then((response) => parser(response))
           .then((parsRss) => {
-            const feedTitle = parsRss.feed.titleChannel;
-            const feedDescription = parsRss.feed.descriptionChannel;
-            const feedId = uniqueId();
+            const feed = createFeed(parsRss.feed);
+            const posts = createPost(parsRss.posts);
 
-            const posts = parsRss.posts.map((item) => {
-              const id = uniqueId();
-              const { title } = item;
-              const { description } = item;
-              const { link } = item;
-              return {
-                id,
-                title,
-                description,
-                link,
-              };
-            });
             // add feeds to watchedState
-            watchedState.feeds.unshift({ feedId, feedTitle, feedDescription });
+            watchedState.feeds.unshift(feed);
             // add posts to watchedState
             watchedState.posts = posts.concat(watchedState.posts);
           })
           .then(() => {
             watchedState.form.valid = 'valid';
-          })
-          .then(() => {
             watchedState.form.addedLinks.push(value);
             watchedState.form.status = 'sent';
             watchedState.form.field = value;
