@@ -143,9 +143,6 @@ const app = () => {
         const formData = new FormData(e.target);
         const value = formData.get('url');
         validation(value, watchedState.form.addedLinks, i18Instance)
-          // .then(() => {
-          //   watchedState.form.valid = 'valid';
-          // })
           .then((url) => getAxiosResponse(url))
           .then((response) => parser(response))
           .then((parsRss) => {
